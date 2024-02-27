@@ -1,18 +1,18 @@
 [package]
 name = "rt-land-js"
-version = "0.1.0"
+version = "0.3.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.79"
+anyhow = "1.0.80"
 http = "1.0.0"
-land-sdk = { path = "../rt-land-v2/crates/sdk" }
+land-sdk = { path = "../runtime-land-dev/crates/sdk" }
 once_cell = "1.19.0"
-quickjs-wasm-rs = "2.0.1"
+quickjs-wasm-rs = "3.0.0"
 send_wrapper = "0.6.0"
-serde = { version = "1.0.196", features = ["derive"] }
+serde = { version = "1.0.197", features = ["derive"] }
 serde_bytes = "0.11.14"
-wit-bindgen = "0.16.0"
+wit-bindgen = "0.19.2"
 
 [lib]
 crate-type = ["cdylib"]
