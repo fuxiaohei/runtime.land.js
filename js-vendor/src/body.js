@@ -119,7 +119,7 @@ class Body {
         const chunks = [];
         let reader = this.#_stream.getReader();
         while (true) {
-            const { done, value } = await reader.read();
+            const { value, done } = await reader.read();
             if (done) {
                 break;
             }
@@ -139,6 +139,9 @@ class Body {
 
     async arrayBuffer() {
         this.#_bodyUsed = true;
+        if (this.#_nobody) {
+            return new ArrayBuffer();
+        }
         if (this.#_stream) {
             return await this.#read_stream_full();
         }

@@ -1,4 +1,4 @@
-import 'fast-text-encoding'; 
+import 'fast-text-encoding';
 
 import { URL, URLSearchParams } from "whatwg-url-without-unicode";
 globalThis.URL = URL;
@@ -78,7 +78,6 @@ function callHandler(input) {
         body_handle: input.body_handle,
     })
     let result = globalThis.handler.fetch(request);
-
     // if result is promise, set then and reject
     if (isPromise(result)) {
         responseWithPromise(result);

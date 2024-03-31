@@ -2,7 +2,6 @@ import Body from "./body";
 import { normalizeMethod } from "./method";
 
 class Request {
-    #_bodyUsed = false;
     #_url;
     #_headers;
     #_method;
