@@ -75,10 +75,8 @@ fn fetch_request(
     // convert sdk response to js response
     let mut headers = HashMap::new();
     response.headers().iter().for_each(|(key, value)| {
-        headers.insert(
-            key.as_str().to_string(),
-            value.to_str().unwrap().to_string(),
-        );
+        let header_value = String::from_utf8_lossy(value.as_bytes()).to_string();
+        headers.insert(key.as_str().to_string(), header_value);
     });
     let js_response = JsResponse {
         status: response.status().into(),
