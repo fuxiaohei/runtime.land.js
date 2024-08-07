@@ -7,7 +7,14 @@ edition = "2021"
 anyhow = "1.0.86"
 http = "1.1.0"
 land-sdk = { path = "../runtime-land/lib/sdk" }
+once_cell = "1.19.0"
 # land-sdk = { git = "https://github.com/fuxiaohei/runtime-land" }
+rquickjs = { version = "0.6.2", features = [
+    "array-buffer",
+    "macro",
+    "parallel",
+    "loader",
+] }
 wit-bindgen = "0.29.0"
 
 [lib]
