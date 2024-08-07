@@ -1,0 +1,21 @@
+{
+  "name": "runtime-land-js-sdk",
+  "version": "0.5.0-beta",
+  "description": "runtime.land js sdk vendor library",
+  "main": "src/index.js",
+  "scripts": {
+    "build-dev": "npx rspack build --mode=development",
+    "build": "npx rspack build --mode=production"
+  },
+  "author": "fudong0797@gmail.com",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@rspack/cli": "0.7.5"
+  },
+  "dependencies": {
+    "fast-text-encoding": "^1.0.6",
+    "headers-polyfill": "^4.0.3",
+    "web-streams-polyfill": "^4.0.0",
+    "whatwg-url-without-unicode": "9.1.0-beta.0"
+  }
+}
