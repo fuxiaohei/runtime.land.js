@@ -1,10 +1,17 @@
 use anyhow::{anyhow, Result};
-use http::{HeaderName, HeaderValue, StatusCode};
+use entity::JsHttpObject;
+use http::StatusCode;
 use once_cell::sync::OnceCell;
-use rquickjs::function::Args;
-use rquickjs::loader::{BuiltinLoader, BuiltinResolver};
-use rquickjs::{Module, Object};
+use rquickjs::{
+    function::Args,
+    loader::{BuiltinLoader, BuiltinResolver},
+    Context, FromJs, IntoJs, Module, Runtime, Undefined, Value,
+};
 use std::io::Read;
+
+mod console;
+mod entity;
+mod hostcall;
 
 static PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -12,14 +19,14 @@ static PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 static JS_VENDOR: &str = include_str!("../js-vendor/dist/lib.js");
 
 // JS_CONTEXT is a global js context to run JS code.
-static JS_CONTEXT: OnceCell<rquickjs::Context> = OnceCell::new();
+static JS_CONTEXT: OnceCell<Context> = OnceCell::new();
 
 #[export_name = "wizer.initialize"]
 pub extern "C" fn init() {
     init_js_context().expect("init_js_context failed");
 }
 
-fn export_js_error(context: rquickjs::Context, err: rquickjs::Error) -> anyhow::Error {
+fn export_js_error(context: Context, err: rquickjs::Error) -> anyhow::Error {
     if err.is_exception() {
         let message = context
             .with(|ctx| {
@@ -36,8 +43,8 @@ fn export_js_error(context: rquickjs::Context, err: rquickjs::Error) -> anyhow::
 }
 
 fn init_js_context() -> Result<()> {
-    let runtime = rquickjs::Runtime::new()?;
-    let context = rquickjs::Context::full(&runtime)?;
+    let runtime = Runtime::new()?;
+    let context = Context::full(&runtime)?;
 
     let mut user_script = String::new();
     std::io::stdin().read_to_string(&mut user_script)?;
@@ -50,6 +57,14 @@ fn init_js_context() -> Result<()> {
     // 1. load vendor js code
     let res = context.with(|ctx| {
         ctx.eval(JS_VENDOR)?;
+
+        // add global modules
+        let global = ctx.globals();
+        let console = console::build(ctx.clone())?;
+        global.set("console", console)?;
+        let hostcall = hostcall::build(ctx.clone())?;
+        global.set("hostcall", hostcall)?;
+
         // import user js module and export to globalThis
         Module::evaluate(
             ctx.clone(),
@@ -97,7 +112,7 @@ fn handle_js_request(req: Request) -> Result<Response, Error> {
 
     let response_result = context.with(|ctx| {
         // 0. getCallHandler
-        let call_handler: rquickjs::Value = ctx.globals().get("callHandler")?;
+        let call_handler: Value = ctx.globals().get("callHandler")?;
         if !call_handler.is_function() {
             let err = ctx.throw(
                 rquickjs::String::from_str(ctx.clone(), "fetch handler is not a function")?
@@ -108,27 +123,14 @@ fn handle_js_request(req: Request) -> Result<Response, Error> {
         let call_handler = call_handler.as_function().unwrap();
 
         // 1. build request object
-        let headers_object = Object::new(ctx.clone())?;
-        req.headers().iter().for_each(|(key, value)| {
-            headers_object
-                .set(
-                    key.as_str().to_string(),
-                    value.to_str().unwrap().to_string(),
-                )
-                .unwrap();
-        });
-        let req_object = Object::new(ctx.clone())?;
-        req_object.set("id", 1)?;
-        req_object.set("method", req.method().to_string())?;
-        req_object.set("uri", req.uri().clone().to_string())?;
-        req_object.set("headers", headers_object)?;
-        req_object.set("body", req.body().body_handle())?;
+        let http_object = JsHttpObject::from_request(req);
+        let req_object = http_object.into_js(&ctx)?;
         let mut args = Args::new(ctx.clone(), 1);
         args.push_arg(req_object)?;
-        let call_handler_result: rquickjs::Result<rquickjs::Value> = call_handler.call_arg(args);
+        let call_handler_result: rquickjs::Result<Value> = call_handler.call_arg(args);
         call_handler_result?;
         // println!("call_handler_result: {:?}", call_handler_result);
-        Ok::<_, rquickjs::Error>(rquickjs::Undefined)
+        Ok::<_, rquickjs::Error>(Undefined)
     });
     if let Err(err) = response_result {
         return Err(err.into());
@@ -140,82 +142,16 @@ fn handle_js_request(req: Request) -> Result<Response, Error> {
         // println!("waiting pending tasks");
         let _ = runtime.execute_pending_job();
         let res = context.with(|ctx| {
-            let response_object: rquickjs::Value = ctx.globals().get("globalResponse")?;
+            let response_object: Value = ctx.globals().get("globalResponse")?;
 
             // 3.1 wait for response
             // if response is null, continue
             if response_object.is_null() {
                 return Ok::<_, rquickjs::Error>(None);
             }
-
-            // 3.2 get response
-            if !response_object.is_object() {
-                return Err(ctx.throw(
-                    rquickjs::String::from_str(ctx.clone(), "globalResponse is not an object")?
-                        .into_value(),
-                ));
-            }
-            let response_object = response_object.as_object().unwrap();
-
-            // 3.3 unwrap response_object to sdk response
-            let status: rquickjs::Value = response_object.get("status").unwrap();
-            let status = status.as_int().unwrap();
-            // println!("status: {:?}", status);
-            let mut response_builder = http::Response::builder().status(status as u16);
-
-            let headers_object: rquickjs::Value = response_object.get("headers").unwrap();
-            if !headers_object.is_object() {
-                return Err(ctx.throw(
-                    rquickjs::String::from_str(ctx.clone(), "headers is not an object")?
-                        .into_value(),
-                ));
-            }
-            let headers_object = headers_object.as_object().unwrap();
-            let headers_iter = headers_object.clone().into_iter();
-            if let Some(headers) = response_builder.headers_mut() {
-                for item in headers_iter {
-                    let (key, value) = item?;
-                    let header_name = key.to_string()?;
-                    let header_value = value.into_string().unwrap().to_string()?;
-                    /*println!(
-                        "header_name: {:?}, header_value: {:?}",
-                        header_name, header_value
-                    );*/
-                    headers.insert(
-                        HeaderName::from_bytes(header_name.as_bytes()).unwrap(),
-                        HeaderValue::from_bytes(header_value.as_bytes()).unwrap(),
-                    );
-                }
-                headers.insert(
-                    HeaderName::from_static("x-powered-by"),
-                    HeaderValue::from_bytes(format!("x-land-js-{}", PKG_VERSION).as_bytes())
-                        .unwrap(),
-                );
-            }
-            let body_handle: rquickjs::Value = response_object.get("body_handle").unwrap();
-            let body_handle = body_handle.as_int().unwrap();
-            // if body_handle is 0, try read body from response_object[body] property,
-            // it should be an arraybuffer
-            if body_handle == 0 {
-                let body_buffer: rquickjs::Value = response_object.get("body").unwrap();
-                let body_buffer = rquickjs::ArrayBuffer::from_value(body_buffer);
-                if body_buffer.is_none() {
-                    return Err(ctx.throw(
-                        rquickjs::String::from_str(ctx.clone(), "body is not an arraybuffer?")?
-                            .into_value(),
-                    ));
-                }
-                let body_buffer = body_buffer.unwrap();
-                let body_buffer = body_buffer.as_bytes().unwrap();
-                let body = Body::from(body_buffer);
-                let response = response_builder.body(body).unwrap();
-                return Ok::<_, rquickjs::Error>(Some(response));
-            }
-
-            // if body_handle is not 0, build Body from body_handle
-            let body = Body::from_handle(body_handle as u32);
-            let response = response_builder.body(body).unwrap();
-            Ok::<_, rquickjs::Error>(Some(response))
+            let js_response = JsHttpObject::from_js(&ctx, response_object)?;
+            let http_response = js_response.into_response();
+            Ok::<_, rquickjs::Error>(Some(http_response))
         });
         if let Err(err) = res {
             return Err(err.into());

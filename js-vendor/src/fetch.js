@@ -2,6 +2,9 @@ import Request from "./request";
 import Response from "./response";
 
 async function fetch(input, init) {
+    if (!hostcall.fetch_request) {
+        throw new Error("hostcall.fetch_request not found");
+    }
     init = init || {}
     let request = new Request(input, init)
     let headers = {}
