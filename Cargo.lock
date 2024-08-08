@@ -122,7 +122,7 @@ checksum = "49f1f14873335454500d59611f1cf4a4b0f786f9ac11f4312a78e4cf2566695b"
 
 [[package]]
 name = "land-sdk"
-version = "0.5.0-beta.4"
+version = "0.5.0-beta.6"
 dependencies = [
  "anyhow",
  "http",
@@ -134,7 +134,7 @@ dependencies = [
 
 [[package]]
 name = "land-sdk-macro"
-version = "0.5.0-beta.4"
+version = "0.5.0-beta.6"
 dependencies = [
  "anyhow",
  "http",

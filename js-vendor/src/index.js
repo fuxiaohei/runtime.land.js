@@ -53,6 +53,7 @@ function responseWithPromise(promise) {
         let output = {
             status: response.status,
             headers,
+            body_handle: 0,
         }
         // if response has bodyHandle, pass it to output
         // else, read arrayBuffer and pass it to output
@@ -67,6 +68,7 @@ function responseWithPromise(promise) {
         globalThis.globalResponse = {
             status: 500,
             headers: {},
+            body_handle: 0,
             body: errorBytes.buffer,
         };
     })
