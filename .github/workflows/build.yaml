@@ -44,10 +44,17 @@ jobs:
           (cd js-vendor && npm install)
           make release
           cp js-engine.wasm js-engine-${{ env.RELEASE_VERSION }}.wasm
+      - name: Js files Test
+        run: |
+          cargo build -p test-runner --release
+          bash ./tests/test-js-files.sh 
+          ./target/release/test-runner up &
+          sleep 5
+          cargo test -p test-runner --release
       - name: Upload CLI
         uses: actions/upload-artifact@v2
         with:
-          name: js-engine
+          name: js-engine.wasm
           path: js-engine-${{ env.RELEASE_VERSION }}.wasm
       - name: upload webassembly to Github release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -67,7 +74,7 @@ jobs:
       - name: Download release assets
         uses: actions/download-artifact@v3
         with:
-          name: js-engine
+          name: js-engine.wasm
 
       - name: Delete nightly tag
         uses: dev-drprasad/delete-tag-and-release@v0.2.1

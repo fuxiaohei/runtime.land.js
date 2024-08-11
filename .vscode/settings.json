@@ -1,5 +1,4 @@
 {
-  "rust-analyzer.cargo.target": "wasm32-wasi",
   "rust-analyzer.cargo.extraEnv": {
     "WASI_SDK": "/opt/wasi-sdk-22.0"
   }
