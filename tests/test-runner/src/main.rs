@@ -1,5 +1,6 @@
 use clap::{CommandFactory, Parser};
 use color_print::cprintln;
+use tracing::level_filters::LevelFilter;
 
 mod cmds;
 mod tests;
@@ -25,6 +26,7 @@ struct CliArgs {
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt()
+        .with_max_level(LevelFilter::INFO)
         .with_target(false)
         .with_level(true)
         .init();
