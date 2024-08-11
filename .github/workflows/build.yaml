@@ -41,7 +41,7 @@ jobs:
       - name: Build
         run: |
           bash ./install-deps.sh
-          export WASI_SDK=$(pwd)/wasi-sdk-24.0
+          export WASI_SDK=$(pwd)/wasi-sdk-22.0
           export PATH=$(pwd)/wizer-v6.0.0-x86_64-linux:$PATH
           env
           (cd js-vendor && npm install)
