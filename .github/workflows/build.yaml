@@ -41,7 +41,7 @@ jobs:
       - name: Build
         run: |
           bash ./install-deps.sh
-          (cd js-lib && npm install)
+          (cd js-vendor && npm install)
           make release
           cp js-engine.wasm js-engine-${{ env.RELEASE_VERSION }}.wasm
       - name: Upload CLI
