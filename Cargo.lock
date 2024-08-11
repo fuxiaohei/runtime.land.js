@@ -122,7 +122,8 @@ checksum = "49f1f14873335454500d59611f1cf4a4b0f786f9ac11f4312a78e4cf2566695b"
 
 [[package]]
 name = "land-sdk"
-version = "0.5.0-beta.6"
+version = "0.5.0-beta.8"
+source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#4fbcbdcedb76faee68bd5e2e777b7381eba7bc15"
 dependencies = [
  "anyhow",
  "http",
@@ -134,12 +135,13 @@ dependencies = [
 
 [[package]]
 name = "land-sdk-macro"
-version = "0.5.0-beta.6"
+version = "0.5.0-beta.8"
+source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#4fbcbdcedb76faee68bd5e2e777b7381eba7bc15"
 dependencies = [
  "anyhow",
  "http",
  "quote",
- "syn 2.0.72",
+ "syn 2.0.73",
 ]
 
 [[package]]
@@ -185,7 +187,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5f12335488a2f3b0a83b14edad48dca9879ce89b2edd10e80237e4e852dd645e"
 dependencies = [
  "proc-macro2",
- "syn 2.0.72",
+ "syn 2.0.73",
 ]
 
 [[package]]
@@ -281,7 +283,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rquickjs-core",
- "syn 2.0.72",
+ "syn 2.0.73",
 ]
 
 [[package]]
@@ -334,7 +336,7 @@ checksum = "e0cd7e117be63d3c3678776753929474f3b04a43a080c744d6b0ae2a8c28e222"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.72",
+ "syn 2.0.73",
 ]
 
 [[package]]
@@ -375,9 +377,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.72"
+version = "2.0.73"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc4b9b9bf2add8093d3f2c0204471e951b2285580335de42f9d2534f3ae7a8af"
+checksum = "837a7e8026c6ce912ff01cefbe8cafc2f8010ac49682e2a3d9decc3bce1ecaaf"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -513,7 +515,7 @@ dependencies = [
  "heck",
  "indexmap",
  "prettyplease",
- "syn 2.0.72",
+ "syn 2.0.73",
  "wasm-metadata",
  "wit-bindgen-core",
  "wit-component",
@@ -529,7 +531,7 @@ dependencies = [
  "prettyplease",
  "proc-macro2",
  "quote",
- "syn 2.0.72",
+ "syn 2.0.73",
  "wit-bindgen-core",
  "wit-bindgen-rust",
 ]
@@ -588,5 +590,5 @@ checksum = "15e934569e47891f7d9411f1a451d947a60e000ab3bd24fbb970f000387d1b3b"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.72",
+ "syn 2.0.73",
 ]

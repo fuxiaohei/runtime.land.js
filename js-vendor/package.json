@@ -15,6 +15,7 @@
   "dependencies": {
     "fast-text-encoding": "^1.0.6",
     "headers-polyfill": "^4.0.3",
+    "itty-router": "^5.0.17",
     "web-streams-polyfill": "^4.0.0",
     "whatwg-url-without-unicode": "9.1.0-beta.0"
   }
