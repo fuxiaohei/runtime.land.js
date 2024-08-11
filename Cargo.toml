@@ -6,8 +6,8 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.86"
 http = "1.1.0"
-once_cell = "1.19.0"
 land-sdk = { git = "https://github.com/fuxiaohei/runtime-land", branch = "dev" }
+once_cell = "1.19.0"
 rquickjs = { version = "0.6.2", features = [
     "array-buffer",
     "macro",
