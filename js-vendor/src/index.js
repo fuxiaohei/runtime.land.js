@@ -1,4 +1,4 @@
-import 'fast-text-encoding';
+import "./text-encoding/lib";
 import "./base64";
 // import "./timer";
 
@@ -11,6 +11,16 @@ globalThis.URLSearchParams = URLSearchParams;
 import { Headers } from "headers-polyfill";
 globalThis.Headers = Headers;
 
+import "web-streams-polyfill/polyfill";
+
+// Blob and File need WebStreams to work
+import { Blob, File } from "blob-polyfill";
+globalThis.Blob = Blob;
+globalThis.File = File;
+
+import { Router } from "itty-router";
+globalThis.Router = Router;
+
 import Request from "./request";
 globalThis.Request = Request;
 
@@ -19,32 +29,6 @@ globalThis.Response = Response;
 
 import fetch from "./fetch";
 globalThis.fetch = fetch;
-
-import { Blob } from "blob-polyfill";
-globalThis.Blob = Blob;
-
-import { Router } from "itty-router";
-globalThis.Router = Router;
-
-import {
-    ReadableStream, ReadableStreamDefaultController, ReadableStreamDefaultReader, ReadableStreamBYOBReader, ReadableStreamBYOBRequest, ReadableByteStreamController,
-    ByteLengthQueuingStrategy, CountQueuingStrategy,
-    TransformStream, TransformStreamDefaultController,
-    WritableStream, WritableStreamDefaultController, WritableStreamDefaultWriter
-} from "web-streams-polyfill";
-globalThis.ReadableStream = ReadableStream;
-globalThis.ReadableStreamDefaultController = ReadableStreamDefaultController;
-globalThis.ReadableStreamDefaultReader = ReadableStreamDefaultReader;
-globalThis.ReadableStreamBYOBReader = ReadableStreamBYOBReader;
-globalThis.ReadableStreamBYOBRequest = ReadableStreamBYOBRequest;
-globalThis.ReadableByteStreamController = ReadableByteStreamController;
-globalThis.ByteLengthQueuingStrategy = ByteLengthQueuingStrategy;
-globalThis.CountQueuingStrategy = CountQueuingStrategy;
-globalThis.TransformStream = TransformStream;
-globalThis.TransformStreamDefaultController = TransformStreamDefaultController;
-globalThis.WritableStream = WritableStream;
-globalThis.WritableStreamDefaultController = WritableStreamDefaultController;
-globalThis.WritableStreamDefaultWriter = WritableStreamDefaultWriter;
 
 function isPromise(p) {
     return p && Object.prototype.toString.call(p) === "[object Promise]"

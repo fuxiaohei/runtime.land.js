@@ -33,6 +33,20 @@ async fn js_2_blob() {
     let body = req.text().await.unwrap();
     assert_eq!(body, "Hello, Blob!");
 }
+
+#[tokio::test]
+async fn js_2_1_file() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, "tests/js-files/2-1-file.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "All tests passed!");
+}
+
 #[tokio::test]
 async fn js_10_atob_btoa() {
     let req = reqwest::Client::new()
