@@ -20,6 +20,9 @@ globalThis.Response = Response;
 import fetch from "./fetch";
 globalThis.fetch = fetch;
 
+import { Blob } from "blob-polyfill";
+globalThis.Blob = Blob;
+
 import { Router } from "itty-router";
 globalThis.Router = Router;
 

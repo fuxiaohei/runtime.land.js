@@ -38,6 +38,10 @@ jobs:
         run: |
           cargo --version --verbose
           rustc --version
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "build"
       - name: Build
         run: |
           bash ./install-deps.sh
