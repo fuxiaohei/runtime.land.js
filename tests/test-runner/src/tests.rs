@@ -48,6 +48,108 @@ async fn js_2_1_file() {
 }
 
 #[tokio::test]
+async fn js_3_headers() {
+    let resp = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let body = resp.text().await.unwrap();
+    assert_eq!(
+        body,
+        "All Headers:\ncontent-type: text/plain\nx-custom-header: CustomValue\n"
+    );
+
+    // append
+    let resp = reqwest::Client::new()
+        .get(format!("{}/append", URL_ADDRESS))
+        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    assert_eq!(
+        resp.headers()
+            .get("X-Appended-Header")
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        "AppendedValue"
+    );
+    let body = resp.text().await.unwrap();
+    assert_eq!(body, "Header appended");
+
+    // delete
+    let resp = reqwest::Client::new()
+        .get(format!("{}/delete", URL_ADDRESS))
+        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    assert!(resp.headers().get("X-Custom-Header").is_none());
+    let body = resp.text().await.unwrap();
+    assert_eq!(body, "Header deleted");
+
+    // get
+    let resp = reqwest::Client::new()
+        .get(format!("{}/get", URL_ADDRESS))
+        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let body = resp.text().await.unwrap();
+    assert_eq!(body, "Content-Type is text/plain");
+
+    // has
+    let resp = reqwest::Client::new()
+        .get(format!("{}/has", URL_ADDRESS))
+        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let body = resp.text().await.unwrap();
+    assert_eq!(body, "Has Content-Type: true");
+
+    // set
+    let resp = reqwest::Client::new()
+        .get(format!("{}/set", URL_ADDRESS))
+        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    assert_eq!(
+        resp.headers()
+            .get("Content-Type")
+            .unwrap()
+            .to_str()
+            .unwrap(),
+        "text/html"
+    );
+    let body = resp.text().await.unwrap();
+    assert_eq!(body, "Content-Type set to text/html");
+
+    // iterate
+    let resp = reqwest::Client::new()
+        .get(format!("{}/iterate", URL_ADDRESS))
+        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let body = resp.text().await.unwrap();
+    assert_eq!(
+        body,
+        "Headers iterated:\ncontent-type: text/plain\nx-custom-header: CustomValue\n"
+    );
+}
+
+#[tokio::test]
 async fn js_10_atob_btoa() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
