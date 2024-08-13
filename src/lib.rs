@@ -32,7 +32,11 @@ fn export_js_error(context: Context, err: rquickjs::Error) -> anyhow::Error {
             .with(|ctx| {
                 let exception = ctx.catch();
                 let exception = exception.as_exception().unwrap();
-                let message = format!("Exception: {:?}", exception.message().unwrap_or_default());
+                let message = format!(
+                    "Exception: {}\n{}",
+                    exception.message().unwrap_or_default(),
+                    exception.stack().unwrap_or_default()
+                );
                 Ok::<String, rquickjs::Error>(message)
             })
             .unwrap();
@@ -56,14 +60,14 @@ fn init_js_context() -> Result<()> {
 
     // 1. load vendor js code
     let res = context.with(|ctx| {
-        ctx.eval(JS_VENDOR)?;
-
         // add global modules
         let global = ctx.globals();
         let console = console::build(ctx.clone())?;
         global.set("console", console)?;
         let hostcall = hostcall::build(ctx.clone())?;
         global.set("hostcall", hostcall)?;
+
+        ctx.eval(JS_VENDOR)?;
 
         // import user js module and export to globalThis
         Module::evaluate(

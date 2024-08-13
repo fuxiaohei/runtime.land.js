@@ -81,9 +81,15 @@ pub fn build<'js>(ctx: Ctx<'js>) -> rquickjs::Result<Object> {
 pub fn get_args_as_str(args: &Rest<Value>) -> anyhow::Result<String> {
     args.iter()
         .map(|arg| {
-            arg.as_string()
-                .ok_or(rquickjs::Error::Unknown)
-                .and_then(|s| s.to_string())
+            if let Some(str) = arg.as_string() {
+                let str = str.to_string()?;
+                return Ok(str);
+            }
+            if let Some(str) = arg.clone().into_string() {
+                let str = str.to_string()?;
+                return Ok(str);
+            }
+            Err(rquickjs::Error::Unknown)
         })
         .collect::<Result<Vec<String>, _>>()
         .map(|vec| vec.join(" "))

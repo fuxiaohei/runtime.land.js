@@ -150,6 +150,74 @@ async fn js_3_headers() {
 }
 
 #[tokio::test]
+async fn js_4_request() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, "tests/js-files/4-request.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(
+        body,
+        "{\"method\":\"POST\",\"headers\":{\"x-test-header\":\"TestValue\"}}"
+    );
+}
+
+#[tokio::test]
+async fn js_5_response() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, "tests/js-files/5-response.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "All tests passed");
+}
+
+#[tokio::test]
+async fn js_6_text_encoder() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, "tests/js-files/6-text-encoder.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "All tests passed!");
+}
+
+#[tokio::test]
+async fn js_7_text_decoder() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, "tests/js-files/7-text-decoder.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "All tests passed!");
+}
+
+#[tokio::test]
+async fn js_8_url() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, "tests/js-files/8-url.js.wasm")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "All tests passed!");
+}
+
+#[tokio::test]
 async fn js_10_atob_btoa() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)

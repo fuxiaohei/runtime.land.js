@@ -1,5 +1,6 @@
 import "./text-encoding/lib";
 import "./base64";
+import "./console";
 // import "./timer";
 
 // import Env from "./env";
@@ -17,6 +18,9 @@ import "web-streams-polyfill/polyfill";
 import { Blob, File } from "blob-polyfill";
 globalThis.Blob = Blob;
 globalThis.File = File;
+
+// FormData needs Blob and File to work
+import "./formdata/lib";
 
 import { Router } from "itty-router";
 globalThis.Router = Router;

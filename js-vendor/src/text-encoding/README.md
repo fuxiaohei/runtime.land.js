@@ -1,7 +1,6 @@
 Text Encoding Polyfill is based on 
 `https://github.com/sinonjs/text-encoding/blob/master/index.js` as `lib.js` and 
-`https://github.com/sinonjs/text-encoding/blob/master/lib/encoding.js`.
-
+`https://github.com/sinonjs/text-encoding/blob/master/lib/encoding.js` with Apache 2.0 license.
 Only support `utf-8, utf-16le and utf-16be` encodings.
 
 -----
