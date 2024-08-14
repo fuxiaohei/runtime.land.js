@@ -74,7 +74,7 @@ async function handleRequest(request) {
             const _ = new URL("/path", "https://example.com");
         } catch (error) {
             throw new Error(
-                `Failed: URL constructor does not create an object with a base.`
+                `Failed: URL constructor does not create an object with a base:` + error
             );
         }
         // Testing URL with a base
@@ -83,7 +83,7 @@ async function handleRequest(request) {
             const _ = new URL("path", baseURL);
         } catch (error) {
             throw new Error(
-                `Failed: URL constructor does not create an object with URL as its base.`
+                `Failed: URL constructor does not create an object with URL as its base:` + error
             );
         }
 
@@ -108,7 +108,7 @@ async function handleRequest(request) {
             headers: { "content-type": "text/plain" },
         });
     } catch (error) {
-        return new Response(error.message, { status: 500 });
+        return new Response(error.message + "\n" + error.stack, { status: 500 });
     }
 }
 

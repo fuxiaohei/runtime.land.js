@@ -42,6 +42,12 @@ if (typeof FormData === 'undefined' || !FormData.prototype.keys) {
         return value.replace(/\r?\n|\r/g, '\r\n')
     }
 
+    function each(arr, cb) {
+        for (let i = 0; i < arr.length; i++) {
+            cb(arr[i])
+        }
+    }
+
     /**
   * @implements {Iterable}
   */

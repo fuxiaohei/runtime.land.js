@@ -1,26 +1,21 @@
 import "./text-encoding/lib";
 import "./base64";
 import "./console";
-// import "./timer";
-
-// import Env from "./env";
-
-import { URL, URLSearchParams } from "whatwg-url-without-unicode";
-globalThis.URL = URL;
-globalThis.URLSearchParams = URLSearchParams;
-
-import { Headers } from "headers-polyfill";
-globalThis.Headers = Headers;
 
 import "web-streams-polyfill/polyfill";
-
 // Blob and File need WebStreams to work
 import { Blob, File } from "blob-polyfill";
 globalThis.Blob = Blob;
 globalThis.File = File;
-
 // FormData needs Blob and File to work
 import "./formdata/lib";
+import "./url/lib";
+
+// import "./timer";
+// import Env from "./env";
+
+import { Headers } from "headers-polyfill";
+globalThis.Headers = Headers;
 
 import { Router } from "itty-router";
 globalThis.Router = Router;
