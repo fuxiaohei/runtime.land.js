@@ -230,7 +230,6 @@ async fn js_8_1_url_searchparams() {
     assert_eq!(body, "All tests passed!");
 }
 
-
 #[tokio::test]
 async fn js_10_atob_btoa() {
     let req = reqwest::Client::new()

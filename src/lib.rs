@@ -23,7 +23,14 @@ static JS_CONTEXT: OnceCell<Context> = OnceCell::new();
 
 #[export_name = "wizer.initialize"]
 pub extern "C" fn init() {
-    init_js_context().expect("init_js_context failed");
+    match init_js_context() {
+        Ok(_) => {
+            println!("success")
+        }
+        Err(err) => {
+            println!("{:?}", err);
+        }
+    }
 }
 
 fn export_js_error(context: Context, err: rquickjs::Error) -> anyhow::Error {
