@@ -73,24 +73,49 @@ pub fn build<'js>(ctx: Ctx<'js>) -> rquickjs::Result<Object> {
             Ok::<_, rquickjs::Error>(js_response_value)
         },
     )?;
+
+    let read_env = Function::new(
+        ctx.clone(),
+        |cx: Ctx<'js>, args: Rest<Value<'js>>| -> Result<Value<'js>, rquickjs::Error> {
+            if args.len() < 1 {
+                let err = rquickjs::Error::MissingArgs {
+                    expected: 1,
+                    given: args.len(),
+                };
+                return Err(err);
+            }
+            let env_key =
+                arg_to_string(args.first().unwrap()).map_err(|e| to_js_error(cx.clone(), e))?;
+            let env_value = std::env::var_os(env_key);
+            if env_value.is_none() {
+                return Ok(Value::new_null(cx.clone()));
+            }
+            let env_value = env_value.unwrap();
+            let env_value = env_value.to_str().unwrap();
+            let env_value_js = rquickjs::String::from_str(cx.clone(), env_value)?;
+            Ok::<_, rquickjs::Error>(Value::from_string(env_value_js))
+        },
+    )?;
+
     hostcall.set("read_body", read_body_callback)?;
     hostcall.set("fetch_request", fetch_request_callback)?;
+    hostcall.set("read_env", read_env)?;
     Ok(hostcall)
+}
+
+pub fn arg_to_string(arg: &Value) -> anyhow::Result<String> {
+    if let Some(str) = arg.as_string() {
+        return Ok(str.to_string()?);
+    }
+    if let Some(str) = arg.clone().into_string() {
+        return Ok(str.to_string()?);
+    }
+    Err(anyhow::anyhow!("Failed to convert arg to string"))
 }
 
 pub fn get_args_as_str(args: &Rest<Value>) -> anyhow::Result<String> {
     args.iter()
-        .map(|arg| {
-            if let Some(str) = arg.as_string() {
-                let str = str.to_string()?;
-                return Ok(str);
-            }
-            if let Some(str) = arg.clone().into_string() {
-                let str = str.to_string()?;
-                return Ok(str);
-            }
-            Err(rquickjs::Error::Unknown)
-        })
+        .map(|arg| arg_to_string(arg))
         .collect::<Result<Vec<String>, _>>()
         .map(|vec| vec.join(" "))
         .context("Failed to convert args to string")

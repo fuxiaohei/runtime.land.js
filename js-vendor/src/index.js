@@ -1,6 +1,6 @@
-import "./text-encoding/lib";
-import "./base64";
-import "./console";
+import "./builtin/text-encoding/lib";
+import "./builtin/base64";
+import "./builtin/console";
 
 import "web-streams-polyfill/polyfill";
 // Blob and File need WebStreams to work
@@ -8,11 +8,11 @@ import { Blob, File } from "blob-polyfill";
 globalThis.Blob = Blob;
 globalThis.File = File;
 // FormData needs Blob and File to work
-import "./formdata/lib";
-import "./url/lib";
+import "./builtin/formdata/lib";
+import "./builtin/url/lib";
 
 // import "./timer";
-// import Env from "./env";
+import Env from "./env";
 
 import { Headers } from "headers-polyfill";
 globalThis.Headers = Headers;
@@ -72,7 +72,7 @@ function callHandler(input) {
         headers: input.headers || {},
         body_handle: input.body_handle,
     })
-    let result = globalThis.handler.fetch(request, {});
+    let result = globalThis.handler.fetch(request, new Env());
     // if result is promise, set then and reject
     if (isPromise(result)) {
         responseWithPromise(result);
