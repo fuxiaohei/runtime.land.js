@@ -6,7 +6,7 @@ static URL_ADDRESS: &str = "http://127.0.0.1:9830";
 #[cfg(test)]
 static X_LAND_M: &str = "x-land-m";
 #[cfg(test)]
-static JS_DIR: &str = "tests/js-files/";
+static JS_DIR: &str = "tests/js-files";
 
 #[tokio::test]
 async fn js_1_hello() {
@@ -223,7 +223,10 @@ async fn js_8_url() {
 async fn js_8_1_url_searchparams() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, format!("{}/8-1-url-search-params.js.wasm", JS_DIR))
+        .header(
+            X_LAND_M,
+            format!("{}/8-1-url-search-params.js.wasm", JS_DIR),
+        )
         .send()
         .await
         .unwrap();
@@ -250,6 +253,19 @@ async fn js_10_atob_btoa() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
         .header(X_LAND_M, format!("{}/10-atob-btoa.js.wasm", JS_DIR))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "All tests passed!");
+}
+
+#[tokio::test]
+async fn js_11_fetch() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, format!("{}/11-fetch.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();

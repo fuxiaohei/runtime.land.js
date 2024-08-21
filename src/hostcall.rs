@@ -29,9 +29,7 @@ pub fn build<'js>(ctx: Ctx<'js>) -> rquickjs::Result<Object> {
             let (value, ok) = body.read(0).map_err(|err| to_js_error(cx.clone(), err))?;
             let chunk_object = Object::new(cx.clone())?;
             chunk_object.set("done", Value::new_bool(cx.clone(), ok))?;
-            let chunk_buffer = ArrayBuffer::new(cx.clone(), value)?;
-            chunk_object.set("value", chunk_buffer)?;
-
+            chunk_object.set("value", ArrayBuffer::new(cx.clone(), value)?)?;
             Ok::<_, rquickjs::Error>(Value::from_object(chunk_object))
         },
     )?;

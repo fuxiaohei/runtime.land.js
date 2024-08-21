@@ -1,5 +1,6 @@
 {
   "rust-analyzer.cargo.extraEnv": {
     "WASI_SDK": "/opt/wasi-sdk-22.0"
-  }
+  },
+  "makefile.configureOnOpen": false
 }

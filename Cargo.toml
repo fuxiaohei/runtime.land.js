@@ -24,4 +24,9 @@ members = ["tests/test-runner"]
 
 [workspace.dependencies]
 land-sdk = { git = "https://github.com/fuxiaohei/runtime-land", branch = "dev" }
+land-wasm-gen = { git = "https://github.com/fuxiaohei/runtime-land", branch = "dev" }
+land-wasm-server = { git = "https://github.com/fuxiaohei/runtime-land", branch = "dev" }
+#land-sdk = { path = "../runtime-land/lib/sdk" }
+#land-wasm-gen = { path = "../runtime-land/lib/wasm-gen" }
+#land-wasm-server =  { path = "../runtime-land/lib/wasm-server" }
 anyhow = "1.0.86"

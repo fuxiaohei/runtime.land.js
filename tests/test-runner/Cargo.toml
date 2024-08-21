@@ -7,8 +7,8 @@ edition = "2021"
 anyhow = { workspace = true }
 clap = { version = "4.5.15", features = ["derive", "env"] }
 color-print = "0.3.6"
-land-wasm-gen = { git = "https://github.com/fuxiaohei/runtime-land", branch = "dev" }
-land-wasm-server = { git = "https://github.com/fuxiaohei/runtime-land", branch = "dev" }
+land-wasm-gen = { workspace = true }
+land-wasm-server = { workspace = true }
 tokio = { version = "1.39.2", features = [
     "rt",
     "macros",

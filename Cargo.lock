@@ -1990,7 +1990,7 @@ dependencies = [
 [[package]]
 name = "land-common"
 version = "0.5.0-rc.1"
-source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#a5fa426f0666ef4987026069db4e683e3ac926b6"
+source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#81912ec15f866d05950ecf413d1eaa2b55925300"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2010,7 +2010,7 @@ dependencies = [
 [[package]]
 name = "land-core"
 version = "0.5.0-rc.1"
-source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#a5fa426f0666ef4987026069db4e683e3ac926b6"
+source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#81912ec15f866d05950ecf413d1eaa2b55925300"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2039,7 +2039,7 @@ dependencies = [
 [[package]]
 name = "land-dao"
 version = "0.5.0-rc.1"
-source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#a5fa426f0666ef4987026069db4e683e3ac926b6"
+source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#81912ec15f866d05950ecf413d1eaa2b55925300"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2062,7 +2062,7 @@ dependencies = [
 [[package]]
 name = "land-sdk"
 version = "0.5.0-rc.1"
-source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#a5fa426f0666ef4987026069db4e683e3ac926b6"
+source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#81912ec15f866d05950ecf413d1eaa2b55925300"
 dependencies = [
  "anyhow",
  "http",
@@ -2075,7 +2075,7 @@ dependencies = [
 [[package]]
 name = "land-sdk-macro"
 version = "0.5.0-rc.1"
-source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#a5fa426f0666ef4987026069db4e683e3ac926b6"
+source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#81912ec15f866d05950ecf413d1eaa2b55925300"
 dependencies = [
  "anyhow",
  "http",
@@ -2086,7 +2086,7 @@ dependencies = [
 [[package]]
 name = "land-vars"
 version = "0.5.0-rc.1"
-source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#a5fa426f0666ef4987026069db4e683e3ac926b6"
+source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#81912ec15f866d05950ecf413d1eaa2b55925300"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2099,7 +2099,7 @@ dependencies = [
 [[package]]
 name = "land-wasm-gen"
 version = "0.5.0-rc.1"
-source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#a5fa426f0666ef4987026069db4e683e3ac926b6"
+source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#81912ec15f866d05950ecf413d1eaa2b55925300"
 dependencies = [
  "anyhow",
  "tracing",
@@ -2113,7 +2113,7 @@ dependencies = [
 [[package]]
 name = "land-wasm-host"
 version = "0.5.0-rc.1"
-source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#a5fa426f0666ef4987026069db4e683e3ac926b6"
+source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#81912ec15f866d05950ecf413d1eaa2b55925300"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2136,7 +2136,7 @@ dependencies = [
 [[package]]
 name = "land-wasm-server"
 version = "0.5.0-rc.1"
-source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#a5fa426f0666ef4987026069db4e683e3ac926b6"
+source = "git+https://github.com/fuxiaohei/runtime-land?branch=dev#81912ec15f866d05950ecf413d1eaa2b55925300"
 dependencies = [
  "anyhow",
  "axum",
