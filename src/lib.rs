@@ -158,6 +158,7 @@ fn handle_js_request(req: Request) -> Result<Response, Error> {
             // 3.1 wait for response
             // if response is null, continue
             if response_object.is_null() {
+                // println!("response is null");
                 return Ok::<_, rquickjs::Error>(None);
             }
             let js_response = JsHttpObject::from_js(&ctx, response_object)?;
@@ -169,6 +170,7 @@ fn handle_js_request(req: Request) -> Result<Response, Error> {
         }
         // if response is not null, return response
         if let Some(response) = res.unwrap() {
+            // println!("response: {:?}", response);
             return Ok(response);
         }
     }

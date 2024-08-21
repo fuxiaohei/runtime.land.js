@@ -5,12 +5,14 @@ use reqwest::StatusCode;
 static URL_ADDRESS: &str = "http://127.0.0.1:9830";
 #[cfg(test)]
 static X_LAND_M: &str = "x-land-m";
+#[cfg(test)]
+static JS_DIR: &str = "tests/js-files/";
 
 #[tokio::test]
 async fn js_1_hello() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, "tests/js-files/1-hello.js.wasm")
+        .header(X_LAND_M, format!("{}/1-hello.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -23,7 +25,7 @@ async fn js_1_hello() {
 async fn js_2_blob() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, "tests/js-files/2-blob.js.wasm")
+        .header(X_LAND_M, format!("{}/2-blob.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -38,7 +40,7 @@ async fn js_2_blob() {
 async fn js_2_1_file() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, "tests/js-files/2-1-file.js.wasm")
+        .header(X_LAND_M, format!("{}/2-1-file.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -51,7 +53,7 @@ async fn js_2_1_file() {
 async fn js_3_headers() {
     let resp = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .header(X_LAND_M, format!("{}/3-headers.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -65,7 +67,7 @@ async fn js_3_headers() {
     // append
     let resp = reqwest::Client::new()
         .get(format!("{}/append", URL_ADDRESS))
-        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .header(X_LAND_M, format!("{}/3-headers.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -84,7 +86,7 @@ async fn js_3_headers() {
     // delete
     let resp = reqwest::Client::new()
         .get(format!("{}/delete", URL_ADDRESS))
-        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .header(X_LAND_M, format!("{}/3-headers.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -96,7 +98,7 @@ async fn js_3_headers() {
     // get
     let resp = reqwest::Client::new()
         .get(format!("{}/get", URL_ADDRESS))
-        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .header(X_LAND_M, format!("{}/3-headers.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -107,7 +109,7 @@ async fn js_3_headers() {
     // has
     let resp = reqwest::Client::new()
         .get(format!("{}/has", URL_ADDRESS))
-        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .header(X_LAND_M, format!("{}/3-headers.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -118,7 +120,7 @@ async fn js_3_headers() {
     // set
     let resp = reqwest::Client::new()
         .get(format!("{}/set", URL_ADDRESS))
-        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .header(X_LAND_M, format!("{}/3-headers.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -137,7 +139,7 @@ async fn js_3_headers() {
     // iterate
     let resp = reqwest::Client::new()
         .get(format!("{}/iterate", URL_ADDRESS))
-        .header(X_LAND_M, "tests/js-files/3-headers.js.wasm")
+        .header(X_LAND_M, format!("{}/3-headers.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -153,7 +155,7 @@ async fn js_3_headers() {
 async fn js_4_request() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, "tests/js-files/4-request.js.wasm")
+        .header(X_LAND_M, format!("{}/4-request.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -169,7 +171,7 @@ async fn js_4_request() {
 async fn js_5_response() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, "tests/js-files/5-response.js.wasm")
+        .header(X_LAND_M, format!("{}/5-response.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -182,7 +184,7 @@ async fn js_5_response() {
 async fn js_6_text_encoder() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, "tests/js-files/6-text-encoder.js.wasm")
+        .header(X_LAND_M, format!("{}/6-text-encoder.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -195,7 +197,7 @@ async fn js_6_text_encoder() {
 async fn js_7_text_decoder() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, "tests/js-files/7-text-decoder.js.wasm")
+        .header(X_LAND_M, format!("{}/7-text-decoder.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -208,7 +210,7 @@ async fn js_7_text_decoder() {
 async fn js_8_url() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, "tests/js-files/8-url.js.wasm")
+        .header(X_LAND_M, format!("{}/8-url.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -221,7 +223,7 @@ async fn js_8_url() {
 async fn js_8_1_url_searchparams() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, "tests/js-files/8-1-url-search-params.js.wasm")
+        .header(X_LAND_M, format!("{}/8-1-url-search-params.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();
@@ -231,10 +233,23 @@ async fn js_8_1_url_searchparams() {
 }
 
 #[tokio::test]
+async fn js_9_wait_until() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, format!("{}/9-wait-until.js.wasm", JS_DIR))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "Hello World!");
+}
+
+#[tokio::test]
 async fn js_10_atob_btoa() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
-        .header(X_LAND_M, "tests/js-files/10-atob-btoa.js.wasm")
+        .header(X_LAND_M, format!("{}/10-atob-btoa.js.wasm", JS_DIR))
         .send()
         .await
         .unwrap();

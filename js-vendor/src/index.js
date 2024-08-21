@@ -12,7 +12,6 @@ import "./builtin/formdata/lib";
 import "./builtin/url/lib";
 
 // import "./timer";
-import Env from "./env";
 
 import { Headers } from "headers-polyfill";
 globalThis.Headers = Headers;
@@ -29,9 +28,9 @@ globalThis.Response = Response;
 import fetch from "./fetch";
 globalThis.fetch = fetch;
 
-function isPromise(p) {
-    return p && Object.prototype.toString.call(p) === "[object Promise]"
-}
+import { isPromise } from "./builtin/utils";
+import ExecutionCtx from "./ctx";
+import Env from "./env";
 
 function responseWithPromise(promise) {
     promise.then(async response => {
@@ -51,6 +50,7 @@ function responseWithPromise(promise) {
         } else {
             output.body = await response.arrayBuffer();
         }
+        // console.log("responseWithPromise called");
         globalThis.globalResponse = output;
     }).catch(error => {
         let errorBytes = new TextEncoder().encode(error.toString() + "\n" + error.stack);
@@ -72,9 +72,14 @@ function callHandler(input) {
         headers: input.headers || {},
         body_handle: input.body_handle,
     })
-    let result = globalThis.handler.fetch(request, new Env());
+
+    const execCtx = new ExecutionCtx();
+    globalThis.execCtx = execCtx;
+
+    let result = globalThis.handler.fetch(request, new Env(), execCtx);
     // if result is promise, set then and reject
     if (isPromise(result)) {
+        // console.log("response result is promise");
         responseWithPromise(result);
     } else {
         throw new Error("Handler function must return a promise");

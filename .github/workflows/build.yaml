@@ -57,7 +57,7 @@ jobs:
           bash ./tests/test-js-files.sh 
           ./target/release/test-runner up &
           sleep 5
-          cargo test -p test-runner -- --test-threads=1
+          cargo test -p test-runner -- --test-threads=1 js_files
       - name: Upload CLI
         uses: actions/upload-artifact@v2
         with:
