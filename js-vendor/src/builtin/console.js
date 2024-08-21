@@ -3,6 +3,9 @@ function convertStringArgs(args) {
         if (arg === undefined) {
             return 'undefined';
         }
+        if (arg === null) {
+            return 'null';
+        }
         return arg.toString();
     });
     return stringArgs;

@@ -181,6 +181,19 @@ async fn js_5_response() {
 }
 
 #[tokio::test]
+async fn js_5_1_response_body() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, format!("{}/5-1-response-body.js.wasm", JS_DIR))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "All tests passed!");
+}
+
+#[tokio::test]
 async fn js_6_text_encoder() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)

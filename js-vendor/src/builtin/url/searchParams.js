@@ -154,7 +154,10 @@ class URLSearchParamsPolyfill {
                 var name = this.#_params[iterator_index];
                 iterator_index++;
                 return { done: value === undefined, value: [name, value] };
-            }
+            },
+            [Symbol.iterator]() {
+                return this;
+            },
         }
         return iterator;
     }

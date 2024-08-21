@@ -6,6 +6,9 @@ js:
 js-prod:
 	cd js-vendor && npm run build
 
+js-test:
+	cd js-vendor && npm run test
+
 dev: js
 	cargo build --target wasm32-wasi --release
 	wasm-opt -O3 -o target/wasm32-wasi/release/runtime_land_js.opt.wasm target/wasm32-wasi/release/runtime_land_js.wasm

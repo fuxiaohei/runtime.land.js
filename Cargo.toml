@@ -1,6 +1,6 @@
 [package]
 name = "runtime-land-js"
-version = "0.5.0-rc.1"
+version = { workspace = true }
 edition = "2021"
 
 [dependencies]
@@ -21,6 +21,9 @@ crate-type = ["cdylib"]
 
 [workspace]
 members = ["tests/test-runner"]
+
+[workspace.package]
+version = "0.5.0-rc.2"
 
 [workspace.dependencies]
 land-sdk = { git = "https://github.com/fuxiaohei/runtime-land", branch = "dev" }

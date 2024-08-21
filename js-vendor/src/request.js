@@ -1,5 +1,5 @@
 import Body from "./body";
-import { normalizeMethod } from "./method";
+import { normalizeMethod } from "./builtin/utils";
 
 class Request {
     #_url;
@@ -31,7 +31,8 @@ class Request {
             throw new TypeError('Body not allowed for GET or HEAD requests')
         }
 
-        this.#_body = new Body(body, options.body_handle);
+        const contentType = this.#_headers.get('Content-Type') || "";
+        this.#_body = new Body(body, options.body_handle, contentType);
     }
 
     get [Symbol.toStringTag]() {
@@ -68,6 +69,14 @@ class Request {
 
     async json() {
         return await this.#_body.json();
+    }
+
+    async blob() {
+        return await this.#_body.blob();
+    }
+
+    async formData() {
+        return await this.#_body.formData();
     }
 
 }

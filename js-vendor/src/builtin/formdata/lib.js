@@ -29,7 +29,9 @@ if (typeof FormData === 'undefined' || !FormData.prototype.keys) {
                     : 'blob'
 
             if (value.name !== filename || Object.prototype.toString.call(value) === '[object Blob]') {
-                value = new File([value], filename)
+                value = new File([value], filename, {
+                    type: value.type,
+                })
             }
             return [String(name), value]
         }
@@ -102,7 +104,8 @@ if (typeof FormData === 'undefined' || !FormData.prototype.keys) {
      */
         append(name, value, filename) {
             ensureArgs(arguments, 2)
-            this._data.push(normalizeArgs(name, value, filename))
+            const data = normalizeArgs(name, value, filename);
+            this._data.push(data);
         }
 
 

@@ -1,4 +1,6 @@
 import { ReadableStream } from "web-streams-polyfill";
+import { Blob } from "blob-polyfill";
+import { getBoundary, parseMultipartForm } from "./builtin/formdata/parser.mjs";
 
 function isDataView(obj) {
     return obj && DataView.prototype.isPrototypeOf(obj)
@@ -27,24 +29,25 @@ class Body {
     #_bodyUsed = false;
     #_bodyHandle = null;
     #_bodyText = "";
-    #_bodyFormData = "";
+    #_bodyFormData = null;
     #_bodyBuffer = null;
+    #_contentType = "";
 
     #_stream = null;
 
-    constructor(body, body_handle) {
+    constructor(body, body_handle, contentType) {
+        this.#_contentType = contentType;
         if (body) {
             if (typeof body === "string") {
                 this.#_bodyText = body;
-            } /*else if (body instanceof FormData) {
-                console.log("-----FormData",body instanceof FormData);
+            } else if (body instanceof FormData) {
                 // copy body to new FormData
                 let f = new FormData()
                 for (let [k, v] of body.entries()) {
                     f.append(k, v)
                 }
                 this.#_bodyFormData = f;
-            }*/ else if (body instanceof URLSearchParams) {
+            } else if (body instanceof URLSearchParams) {
                 this.#_bodyText = body.toString();
             } else if (body instanceof ArrayBuffer || isArrayBufferView(body)) {
                 this.#_bodyBuffer = body;
@@ -91,6 +94,61 @@ class Body {
             return new TextEncoder().encode(params.toString());
         }
         return new TextEncoder().encode(this.#_bodyText);
+    }
+
+    async #body_to_formData() {
+        if (this.#_bodyFormData) {
+            return this.#_bodyFormData;
+        }
+
+        const parseURLSearchParams = function (body) {
+            const params = new URLSearchParams(body);
+            const form = new FormData();
+            for (let [k, v] of params.entries()) {
+                form.append(k, v);
+            }
+            return form;
+        }
+
+        const parseMultipart = function (body, boundary) {
+            // parse multipart/form-data
+            const parts = parseMultipartForm(body, boundary);
+            const form = new FormData();
+            for (let part of parts) {
+                if (part.type || part.filename) {
+                    form.append(part.name, new Blob([part.data], { type: part.type || "" }), part.filename || undefined)
+                } else {
+                    form.append(part.name, new TextDecoder().decode(part.data))
+                }
+            }
+            return form;
+        }
+
+        if (this.#_bodyText) {
+            // parse content-type, application/x-www-form-urlencoded
+            // if content-type is application/x-www-form-urlencoded, use URLSearchParams to parse bodyText
+            if (this.#_contentType == "application/x-www-form-urlencoded") {
+                return parseURLSearchParams(this.#_bodyText);
+            }
+            // parse multipart/form-data
+            // if content-type is multipart/form-data, use FormData to parse bodyText
+            if (this.#_contentType.startsWith("multipart/form-data")) {
+                const buffer = new TextEncoder().encode(this.#_bodyText);
+                const boundary = getBoundary(this.#_contentType);
+                return parseMultipart(buffer, boundary);
+            }
+        }
+
+        // other cases, handle as an arrayBuffer
+        const buffer = await this.arrayBuffer();
+        if (this.#_contentType == "application/x-www-form-urlencoded") {
+            return parseURLSearchParams(new TextDecoder().decode(buffer));
+        }
+        if (this.#_contentType.startsWith("multipart/form-data")) {
+            const boundary = getBoundary(this.#_contentType);
+            return parseMultipart(buffer, boundary);
+        }
+        throw new Error("body is not a FormData");
     }
 
     get stream() {
@@ -149,6 +207,15 @@ class Body {
         return this.#body_to_arraybuffer().buffer;
     }
 
+    async blob() {
+        this.#_bodyUsed = true;
+        if (this.#_nobody) {
+            return new Blob();
+        }
+        let arraybuffer = await this.arrayBuffer();
+        return new Blob([arraybuffer]);
+    }
+
     async text() {
         let arraybuffer = await this.arrayBuffer();
         return new TextDecoder().decode(arraybuffer);
@@ -157,6 +224,14 @@ class Body {
     async json() {
         let text = await this.text();
         return JSON.parse(text);
+    }
+
+    async formData() {
+        this.#_bodyUsed = true;
+        if (this.#_nobody) {
+            return new FormData();
+        }
+        return await this.#body_to_formData();
     }
 }
 

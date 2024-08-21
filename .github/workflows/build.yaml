@@ -49,6 +49,7 @@ jobs:
           export PATH=$(pwd)/wizer-v6.0.0-x86_64-linux:$PATH
           env
           (cd js-vendor && npm install)
+          make js-test
           make release
           cp js-engine.wasm js-engine-${{ env.RELEASE_VERSION }}.wasm
       - name: Js files Test
