@@ -286,3 +286,19 @@ async fn js_11_fetch() {
     let body = req.text().await.unwrap();
     assert_eq!(body, "All tests passed!");
 }
+
+#[tokio::test]
+async fn js_15_timer() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, format!("{}/15-timer.js.wasm", JS_DIR))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(
+        body,
+        "Hello World! Sleep 100ms! Interval 100ms! Interval 100ms! Interval 100ms! Interval 100ms!"
+    );
+}

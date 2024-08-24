@@ -103,12 +103,15 @@ fn init_js_context() -> Result<()> {
     Ok(())
 }
 
-use land_sdk::http::{error_response, Body, Error, Request, Response};
 use land_sdk::http_main;
+use land_sdk::{
+    http::{error_response, Body, Error, Request, Response},
+    ExecutionCtx,
+};
 
 #[http_main]
-pub fn handle_request(req: Request) -> Result<Response, Error> {
-    let resp = match handle_js_request(req) {
+pub fn handle_request(req: Request, mut ctx: ExecutionCtx) -> Result<Response, Error> {
+    let resp = match handle_js_request(req, ctx) {
         Ok(response) => response,
         Err(err) => {
             println!("handle_js_request error: {:?}", err);
@@ -118,7 +121,7 @@ pub fn handle_request(req: Request) -> Result<Response, Error> {
     Ok(resp)
 }
 
-fn handle_js_request(req: Request) -> Result<Response, Error> {
+fn handle_js_request(req: Request, mut ctx: ExecutionCtx) -> Result<Response, Error> {
     let context = JS_CONTEXT.get().unwrap();
 
     let response_result = context.with(|ctx| {
@@ -149,9 +152,13 @@ fn handle_js_request(req: Request) -> Result<Response, Error> {
 
     // 3. waiting pending tasks, waiting promises
     let runtime = context.runtime();
-    while runtime.is_job_pending() {
-        // println!("waiting pending tasks");
-        let _ = runtime.execute_pending_job();
+    loop {
+        // waiting pending promises
+        if runtime.is_job_pending() {
+            let _ = runtime.execute_pending_job();
+        }
+
+        // get response object from globalThis
         let res = context.with(|ctx| {
             let response_object: Value = ctx.globals().get("globalResponse")?;
 
@@ -173,6 +180,10 @@ fn handle_js_request(req: Request) -> Result<Response, Error> {
             // println!("response: {:?}", response);
             return Ok(response);
         }
+
+        // if call ExecutionCtx run once
+        if ctx.is_pending() {
+            ctx.execute();
+        }
     }
-    Err(anyhow!("handle_js_request no response"))
 }

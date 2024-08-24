@@ -1,6 +1,6 @@
 {
   "name": "runtime-land-js-sdk",
-  "version": "0.5.0-rc.2",
+  "version": "0.5.0-rc.6",
   "description": "runtime.land js sdk vendor library",
   "main": "src/index.js",
   "scripts": {

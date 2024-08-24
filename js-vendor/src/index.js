@@ -10,8 +10,7 @@ globalThis.File = File;
 // FormData needs Blob and File to work
 import "./builtin/formdata/lib";
 import "./builtin/url/lib";
-
-// import "./timer";
+import "./builtin/timer";
 
 import { Headers } from "headers-polyfill";
 globalThis.Headers = Headers;

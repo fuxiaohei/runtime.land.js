@@ -1,7 +1,37 @@
-use crate::entity::{JsFetchOptions, JsHttpObject};
+use crate::{
+    entity::{JsFetchOptions, JsHttpObject},
+    JS_CONTEXT,
+};
 use anyhow::Context;
-use land_sdk::http::{Body, RedirectPolicy};
-use rquickjs::{prelude::Rest, ArrayBuffer, Ctx, FromJs, Function, IntoJs, Object, Value};
+use land_sdk::{
+    http::{Body, RedirectPolicy},
+    ExecutionCtx,
+};
+use rquickjs::{
+    function::Args, prelude::Rest, ArrayBuffer, Ctx, FromJs, Function, IntoJs, Object, Undefined,
+    Value,
+};
+
+fn resolve_timer(handle: u32) {
+    let context = JS_CONTEXT.get().unwrap();
+    let _ = context.with(|ctx| {
+        // get globalThis.resolveTimer function
+        let call: Value = ctx.globals().get("resolveTimeout")?;
+        let call_handler = call
+            .as_function()
+            .expect("get globalThis.resolveTimeout failed");
+        let mut args = Args::new(ctx.clone(), 1);
+        args.push_arg(Value::new_int(ctx.clone(), handle as i32))?;
+        call_handler.call_arg(args)?;
+        Ok::<_, rquickjs::Error>(Undefined)
+    });
+
+    // make sure timeout wrapper promise is done
+    let runtime = context.runtime();
+    while runtime.is_job_pending() {
+        let _ = runtime.execute_pending_job();
+    }
+}
 
 /// build hostcall object that used export to globalThis
 pub fn build<'js>(ctx: Ctx<'js>) -> rquickjs::Result<Object> {
@@ -95,9 +125,36 @@ pub fn build<'js>(ctx: Ctx<'js>) -> rquickjs::Result<Object> {
         },
     )?;
 
+    let sleep = Function::new(
+        ctx.clone(),
+        |cx: Ctx<'js>, args: Rest<Value<'js>>| -> Result<Value<'js>, rquickjs::Error> {
+            if args.len() < 1 {
+                let err = rquickjs::Error::MissingArgs {
+                    expected: 1,
+                    given: args.len(),
+                };
+                return Err(err);
+            }
+            let arg = args.first().unwrap();
+            if !arg.is_int() {
+                return Err(cx.throw(
+                    rquickjs::String::from_str(cx.clone(), "sleep time must be int")?.into_value(),
+                ));
+            }
+            let ms = arg.as_int().unwrap() as u32;
+            let ctx = ExecutionCtx::get();
+            let handle = ctx.sleep(ms);
+            ctx.sleep_callback(handle, move || {
+                resolve_timer(handle);
+            });
+            Ok::<_, rquickjs::Error>(Value::new_int(cx.clone(), handle as i32))
+        },
+    )?;
+
     hostcall.set("read_body", read_body_callback)?;
     hostcall.set("fetch_request", fetch_request_callback)?;
     hostcall.set("read_env", read_env)?;
+    hostcall.set("sleep", sleep)?;
     Ok(hostcall)
 }
 

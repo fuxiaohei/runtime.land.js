@@ -23,7 +23,7 @@ crate-type = ["cdylib"]
 members = ["tests/test-runner"]
 
 [workspace.package]
-version = "0.5.0-rc.2"
+version = "0.5.0-rc.6"
 
 [workspace.dependencies]
 land-sdk = { git = "https://github.com/fuxiaohei/runtime-land", branch = "dev" }
