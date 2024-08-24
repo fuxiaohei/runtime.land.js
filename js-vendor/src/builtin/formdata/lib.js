@@ -29,9 +29,15 @@ if (typeof FormData === 'undefined' || !FormData.prototype.keys) {
                     : 'blob'
 
             if (value.name !== filename || Object.prototype.toString.call(value) === '[object Blob]') {
-                value = new File([value], filename, {
+                //console.log("---append blob", filename, value.type);
+                let options = {
                     type: value.type,
-                })
+                };
+                if (value.lastModified) {
+                    options.lastModified = value.lastModified
+                }
+                value = new File([value], filename, options)
+                //console.log("---file", value.constructor.name)
             }
             return [String(name), value]
         }

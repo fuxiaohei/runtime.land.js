@@ -301,6 +301,32 @@ async fn js_12_streams() {
 }
 
 #[tokio::test]
+async fn js_13_performance() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, format!("{}/13-performance.js.wasm", JS_DIR))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "All tests passed!");
+}
+
+#[tokio::test]
+async fn js_14_formdata() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, format!("{}/14-formdata.js.wasm", JS_DIR))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "All tests passed!");
+}
+
+#[tokio::test]
 async fn js_15_timer() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)
@@ -314,4 +340,17 @@ async fn js_15_timer() {
         body,
         "Hello World! Sleep 100ms! Interval 100ms! Interval 100ms! Interval 100ms! Interval 100ms!"
     );
+}
+
+#[tokio::test]
+async fn js_16_crypto() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, format!("{}/16-crypto.js.wasm", JS_DIR))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "All tests passed!");
 }

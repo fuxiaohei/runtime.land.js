@@ -19,6 +19,7 @@
     "blob-polyfill": "^9.0.20240710",
     "headers-polyfill": "^4.0.3",
     "itty-router": "5.0.18",
+    "uuid": "^10.0.0",
     "web-streams-polyfill": "^4.0.0"
   }
 }

@@ -11,6 +11,10 @@ globalThis.File = File;
 import "./builtin/formdata/lib";
 import "./builtin/url/lib";
 import "./builtin/timer";
+import "./builtin/performance";
+
+// WebCrypto
+import "./builtin/crypto/lib";
 
 import { Headers } from "headers-polyfill";
 globalThis.Headers = Headers;

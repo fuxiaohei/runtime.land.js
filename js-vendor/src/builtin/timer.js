@@ -31,13 +31,18 @@ globalThis.clearTimeout = function (id) {
 globalThis.resolveTimeout = function (id) {
     let item = timers[id];
     if (item) {
-        // call timer function
-        item.callback();
-        delete timers[id];
         // if interval, create new timer to run next time
         if (item.interval_id > 0 && !clear_intervals[item.interval_id]) {
             create_timer(item.callback, item.delay, true, item.interval_id);
         }
+        // if interval is clean, delete timer
+        if (clear_intervals[item.interval_id]){
+            delete timers[id];
+            return;
+        }
+        // call timer function
+        item.callback();
+        delete timers[id];
     } else {
         // console.log("timer not found", id)
     }
@@ -48,5 +53,6 @@ globalThis.setInterval = function (cb, delay) {
 }
 
 globalThis.clearInterval = function (id) {
+    // console.log("clear interval: ", id)
     clear_intervals[id] = true;
 }
