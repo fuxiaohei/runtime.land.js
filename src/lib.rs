@@ -154,6 +154,7 @@ fn handle_js_request(req: Request, mut ctx: ExecutionCtx) -> Result<Response, Er
     let runtime = context.runtime();
     loop {
         // waiting pending promises
+        // println!("waiting pending promises {}", runtime.is_job_pending());
         if runtime.is_job_pending() {
             let _ = runtime.execute_pending_job();
         }
@@ -182,6 +183,7 @@ fn handle_js_request(req: Request, mut ctx: ExecutionCtx) -> Result<Response, Er
         }
 
         // if call ExecutionCtx run once
+        // println!("ctx.is_pending(): {:?}", ctx.is_pending());
         if ctx.is_pending() {
             ctx.execute();
         }

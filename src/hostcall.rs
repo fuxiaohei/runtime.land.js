@@ -23,12 +23,14 @@ fn resolve_timer(handle: u32) {
         let mut args = Args::new(ctx.clone(), 1);
         args.push_arg(Value::new_int(ctx.clone(), handle as i32))?;
         call_handler.call_arg(args)?;
+        // println!("resolve_timer: {:?}", handle);
         Ok::<_, rquickjs::Error>(Undefined)
     });
 
     // make sure timeout wrapper promise is done
+    // just do once. Other promise will be resolved in handle_js_request() with main loop
     let runtime = context.runtime();
-    while runtime.is_job_pending() {
+    if runtime.is_job_pending() {
         let _ = runtime.execute_pending_job();
     }
 }

@@ -288,6 +288,19 @@ async fn js_11_fetch() {
 }
 
 #[tokio::test]
+async fn js_12_streams() {
+    let req = reqwest::Client::new()
+        .get(URL_ADDRESS)
+        .header(X_LAND_M, format!("{}/12-streams.js.wasm", JS_DIR))
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(req.status(), StatusCode::OK);
+    let body = req.text().await.unwrap();
+    assert_eq!(body, "All tests passed!");
+}
+
+#[tokio::test]
 async fn js_15_timer() {
     let req = reqwest::Client::new()
         .get(URL_ADDRESS)

@@ -106,18 +106,17 @@ async function handleRequest(request) {
 
         // Testing the ReadableStream Backpressure
         try {
-            let readCount = 0;
+            let endQueue = false;
             const readableStream = new ReadableStream({
                 start(controller) {
                     controller.enqueue("A");
                     controller.enqueue("B");
                     controller.enqueue("C");
                     // Simulate a delay for the next enqueue
-                    setTimeout(() => controller.enqueue("D"), 500);
+                    setTimeout(() => { controller.enqueue("D"); endQueue = true; }, 500);
                 },
                 pull(controller) {
-                    readCount++;
-                    if (readCount > 3) {
+                    if (endQueue) {
                         controller.close();
                     }
                 },
